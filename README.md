@@ -3,6 +3,18 @@ BME680:
 ![BME680](https://github.com/linux-downey/picture_repository/blob/master/BME680.png)
 BME680 is an integrated environmental sensor developed specifically for mobile applications and wearables where size and low power consumption are key requirements.It also supports four kinds of numerical measurements of temperature, humidity, gas and air pressure.  
 
+Before use:
+===============
+>* **This library only supports ATmega2560-arduino board.**
+>* At first ,you need to create a folder bsec\atmega2560 at ARDUINO_INSTALL_DIR\Arduino\hardware\arduino\avr\libraries\,the ARDUINO_INSTALL_DIR is the directory that arduino IDE installed.
+>* Copy the libalgobsec.a to the ARDUINO_INSTALL_DIR\Arduino\hardware\arduino\avr\libraries\bsec\atmega2560
+>* Edit the file platform.txt at ARDUINO_INSTALL_DIR\Arduino\hardware\arduino\avr\,replace the 68th line:
+recipe.c.combine.pattern="{compiler.path}{compiler.c.elf.cmd}" {compiler.c.elf.flags} -mmcu={build.mcu} {compiler.c.elf.extra_flags} -o "{build.path}/{build.project_name}.elf" {object_files} "{build.path}/{archive_file}" "-L{build.path}" -lm 
+with:
+recipe.c.combine.pattern="{compiler.path}{compiler.c.elf.cmd}" {compiler.c.elf.flags} -mmcu={build.mcu} {compiler.c.elf.extra_flags} -o "{build.path}/{build.project_name}.elf" {object_files} "{build.path}/{archive_file}" "-L{build.path}" -lm -L{runtime.platform.path}\libraries\bsec\{build.mcu} -lalgobsec
+Link this library during compilation.
+**Compile error will occur without operations above.**
+
 Usage:
 ==========
 ***This Bme680 version only supports IIC communication protocols.***
@@ -12,8 +24,16 @@ There are three arduino examples for different usecase.
 >3. basic_config_state_ulp_plus:Measurement is automatic.if user wants to perform a additionnal mersurement,use a key interrupt to do this.
 
 
-
-***user also can downloads the source code and running it on arduino IDE,More details in /examples***
+Note:
+===========
+>* Need to wait about 2mins after module power on that gas heater enter a steady state.The gas value at this time is correct
+>* The IAQ value corresponding air quality:
+    0-50       -     good
+    51-100     -     average
+    101-150    -     little bad
+    151-200    -     bad
+    201-300    -     worse
+    301-500    -     very bad
 
 
 statement:
