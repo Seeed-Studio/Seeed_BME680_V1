@@ -69,7 +69,6 @@ void loop(void)
     Serial.println(output);
     Serial.println(' ');
     Serial.println(' ');
-    updateState();
   } else {
     checkIaqSensorStatus();
   }
