@@ -5,26 +5,16 @@ BME680 is an integrated environmental sensor developed specifically for mobile a
 
 Usage:
 ==========
-***Bme680 supports IIC and SPI communication protocols.***
-If the user uses IIC protocol,The main functions are as follows，And the results of mesurements stored in struct of ***bme680.sensor_result_value***.
+***This Bme680 version only supports IIC communication protocols.***
+There are three arduino examples for different usecase.
+>1. basic:This sketch is the basic example to perform measurement,the problem is that the result of gas value may be inaccurate.Because the gas measurement depends on a baseline which stored in the host,the baseline can be seen as compensation.
+>2. basic_config_state:Compare to the basic,this example will store the baseline regular.Baseline will be loaded after the host restarts.This example is recommended when user wants to
+>3. basic_config_state_ulp_plus:Measurement is automatic.if user wants to perform a additionnal mersurement,use a key interrupt to do this.
 
-	Seeed_BME680 bme680(IIC_ADDR); //IIC_ADDR is address of IIC device
-	bme680.init();
-	bme680.read_sensor_data();
 
-If user uses SPI protocol,The main functions are as follows，And the results of mesurements stored in struct of ***bme680.sensor_result_value***.
-
-	Seeed_BME680 bme680();//if user uses default pins of UNO development board.(cs-10,mosi-11,miso-12,sck-13)
-	//  Seeed_BME680 bme680(BME_CS, BME_MOSI, BME_MISO,  BME_SCK);//if user customizes pin of SPI hardware interface.
-	bme680.init();
-	bme680.read_sensor_data();
 
 ***user also can downloads the source code and running it on arduino IDE,More details in /examples***
 
-Software reference:
-----------
-**1.The official drive of Bosch**  
-**2.The BME680 drive of Adafruit**
 
 statement:
 ==========
