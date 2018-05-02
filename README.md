@@ -21,7 +21,6 @@ Usage:
 There are three arduino examples for different usecase.
 >1. basic:This sketch is the basic example to perform measurement,the problem is that the result of gas value may be inaccurate.Because the gas measurement depends on a baseline which stored in the host,the baseline can be seen as compensation.
 >2. basic_config_state:Compare to the basic,this example will store the baseline regular.Baseline will be loaded after the host restarts.This example is recommended when user wants to
->3. basic_config_state_ulp_plus:Measurement is automatic.if user wants to perform a additionnal mersurement,use a key interrupt to do this.
 
 
 Note:
