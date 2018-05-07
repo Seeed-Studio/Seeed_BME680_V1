@@ -25,6 +25,7 @@ There are three arduino examples for different usecase.
 
 Note:
 ===========
+>* **The sensor needs to be calibrated for 5 days when it first uses.The sensor value is not accurate before/during calibration.**
 >* Need to wait about 2mins after module power on that gas heater enter a steady state.The gas value at this time is correct
 >* The IAQ value corresponding air quality:
     0-50       -     good
@@ -33,7 +34,7 @@ Note:
     151-200    -     bad
     201-300    -     worse
     301-500    -     very bad
-
+ 
 
 statement:
 ==========
