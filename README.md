@@ -10,8 +10,8 @@ Before use:
 >* At first ,you need to create a folder bsec\atmega2560 at ARDUINO_INSTALL_DIR\Arduino\hardware\arduino\avr\libraries\,the ARDUINO_INSTALL_DIR is the directory that arduino IDE installed.
 >* Copy the libalgobsec.a to the ARDUINO_INSTALL_DIR\Arduino\hardware\arduino\avr\libraries\bsec\atmega2560
 >* Edit the file platform.txt at ARDUINO_INSTALL_DIR\Arduino\hardware\arduino\avr\,replace the 68th line:
-recipe.c.combine.pattern="{compiler.path}{compiler.c.elf.cmd}" {compiler.c.elf.flags} -mmcu={build.mcu} {compiler.c.elf.extra_flags} -o "{build.path}/{build.project_name}.elf" {object_files} "{build.path}/{archive_file}" "-L{build.path}" -lm 
-with:
+recipe.c.combine.pattern="{compiler.path}{compiler.c.elf.cmd}" {compiler.c.elf.flags} -mmcu={build.mcu} {compiler.c.elf.extra_flags} -o "{build.path}/{build.project_name}.elf" {object_files} "{build.path}/{archive_file}" "-L{build.path}" -lm  
+with:  
 recipe.c.combine.pattern="{compiler.path}{compiler.c.elf.cmd}" {compiler.c.elf.flags} -mmcu={build.mcu} {compiler.c.elf.extra_flags} -o "{build.path}/{build.project_name}.elf" {object_files} "{build.path}/{archive_file}" "-L{build.path}" -lm -L{runtime.platform.path}\libraries\bsec\{build.mcu} -lalgobsec
 Link this library during compilation.
 **Compile error will occur without operations above.**
