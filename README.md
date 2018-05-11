@@ -12,7 +12,7 @@ Before use:
 >* Edit the file platform.txt at ARDUINO_INSTALL_DIR\Arduino\hardware\arduino\avr\,replace the 68th line:  
 recipe.c.combine.pattern="{compiler.path}{compiler.c.elf.cmd}" {compiler.c.elf.flags} -mmcu={build.mcu} {compiler.c.elf.extra_flags} -o "{build.path}/{build.project_name}.elf" {object_files} "{build.path}/{archive_file}" "-L{build.path}" -lm  
 with:  
-recipe.c.combine.pattern="{compiler.path}{compiler.c.elf.cmd}" {compiler.c.elf.flags} -mmcu={build.mcu} {compiler.c.elf.extra_flags} -o "{build.path}/{build.project_name}.elf" {object_files} "{build.path}/{archive_file}" "-L{build.path}" -lm -L{runtime.platform.path}\libraries\bsec\{build.mcu} -lalgobsec  
+recipe.c.combine.pattern="{compiler.path}{compiler.c.elf.cmd}" {compiler.c.elf.flags} -mmcu={build.mcu} {compiler.c.elf.extra_flags} -o "{build.path}/{build.project_name}.elf" {object_files} "{build.path}/{archive_file}" "-L{build.path}" -lm -L{runtime.platform.path}\libraries\bsec\\{build.mcu} -lalgobsec  
 Link this library during compilation.
 **Compile error will occur without operations above.**
 **If you are still confuse about how to add the .a library,please refer to doc/BST-BME680-library-usage.pdf**
