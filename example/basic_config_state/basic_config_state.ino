@@ -18,169 +18,167 @@ uint16_t stateUpdateCounter = 0;
 String output;
 
 // Entry point for the example
-void setup(void)
-{
-  //EEPROM.begin(BSEC_MAX_STATE_BLOB_SIZE + 1); // 1st address for the length
-  Serial.begin(115200);
+void setup(void) {
+    //EEPROM.begin(BSEC_MAX_STATE_BLOB_SIZE + 1); // 1st address for the length
+    Serial.begin(115200);
 
-  iaqSensor.begin(BME680_I2C_ADDR_PRIMARY, Wire);
-  output = "\nBSEC library version " + String(iaqSensor.version.major) + "." + String(iaqSensor.version.minor) + "." + String(iaqSensor.version.major_bugfix) + "." + String(iaqSensor.version.minor_bugfix);
-  Serial.println(output);
-  checkIaqSensorStatus();
+    iaqSensor.begin(BME680_I2C_ADDR_PRIMARY, Wire);
+    output = "\nBSEC library version " + String(iaqSensor.version.major) + "." + String(
+                 iaqSensor.version.minor) + "." + String(iaqSensor.version.major_bugfix) + "." + String(iaqSensor.version.minor_bugfix);
+    Serial.println(output);
+    checkIaqSensorStatus();
 
-  iaqSensor.setConfig(bsec_config_iaq);
-  checkIaqSensorStatus();
+    iaqSensor.setConfig(bsec_config_iaq);
+    checkIaqSensorStatus();
 
-  loadState();
+    loadState();
 
-  bsec_virtual_sensor_t sensorList[7] = {
-    BSEC_OUTPUT_RAW_TEMPERATURE,
-    BSEC_OUTPUT_RAW_PRESSURE,
-    BSEC_OUTPUT_RAW_HUMIDITY,
-    BSEC_OUTPUT_RAW_GAS,
-    BSEC_OUTPUT_IAQ_ESTIMATE,
-    BSEC_OUTPUT_SENSOR_HEAT_COMPENSATED_TEMPERATURE,
-    BSEC_OUTPUT_SENSOR_HEAT_COMPENSATED_HUMIDITY,
-  };
+    bsec_virtual_sensor_t sensorList[7] = {
+        BSEC_OUTPUT_RAW_TEMPERATURE,
+        BSEC_OUTPUT_RAW_PRESSURE,
+        BSEC_OUTPUT_RAW_HUMIDITY,
+        BSEC_OUTPUT_RAW_GAS,
+        BSEC_OUTPUT_IAQ_ESTIMATE,
+        BSEC_OUTPUT_SENSOR_HEAT_COMPENSATED_TEMPERATURE,
+        BSEC_OUTPUT_SENSOR_HEAT_COMPENSATED_HUMIDITY,
+    };
 
-  iaqSensor.updateSubscription(sensorList, 7, BSEC_SAMPLE_RATE_LP);
-  checkIaqSensorStatus();
+    iaqSensor.updateSubscription(sensorList, 7, BSEC_SAMPLE_RATE_LP);
+    checkIaqSensorStatus();
 
-  // Print the header
- // output = "Timestamp [ms], raw temperature [°C], pressure [hPa], raw relative humidity [%], gas [Ohm], IAQ, IAQ accuracy, temperature [°C], relative humidity [%]";
- // Serial.println(output);
+    // Print the header
+    // output = "Timestamp [ms], raw temperature [°C], pressure [hPa], raw relative humidity [%], gas [Ohm], IAQ, IAQ accuracy, temperature [°C], relative humidity [%]";
+    // Serial.println(output);
 }
 
 // Function that is looped forever
-void loop(void)
-{
-  if (iaqSensor.run()) { // If new data is available
-    output ="Timestamp[ms]=";
-    output += String(millis());
-    output +='\n';
-    //output += ", " + String(iaqSensor.rawTemperature);
-    output +="Pressure[hPa]=";
-    output +=  String(iaqSensor.pressure);
-    output +='\n';
+void loop(void) {
+    if (iaqSensor.run()) { // If new data is available
+        output = "Timestamp[ms]=";
+        output += String(millis());
+        output += '\n';
+        //output += ", " + String(iaqSensor.rawTemperature);
+        output += "Pressure[hPa]=";
+        output +=  String(iaqSensor.pressure);
+        output += '\n';
 
-    output +="IAQ=";
-    output +=String(iaqSensor.iaqEstimate);
-    output +='\n';
+        output += "IAQ=";
+        output += String(iaqSensor.iaqEstimate);
+        output += '\n';
 
-    output +="IAQAccuracy=";
-    output +=String(iaqSensor.iaqAccuracy);
-    output +='\n';
+        output += "IAQAccuracy=";
+        output += String(iaqSensor.iaqAccuracy);
+        output += '\n';
 
-    output +="temperature=";
-    output +=String(iaqSensor.temperature);
-    output +='\n';
+        output += "temperature=";
+        output += String(iaqSensor.temperature);
+        output += '\n';
 
-    output +="humidity=";
-    output +=String(iaqSensor.humidity);
-    output +='\n';
+        output += "humidity=";
+        output += String(iaqSensor.humidity);
+        output += '\n';
 
-    Serial.println(output);
-    Serial.println(' ');
-    Serial.println(' ');
-    updateState();
-  } else {
-    checkIaqSensorStatus();
-  }
+        Serial.println(output);
+        Serial.println(' ');
+        Serial.println(' ');
+        updateState();
+    } else {
+        checkIaqSensorStatus();
+    }
 }
 
 // Helper function definitions
-void checkIaqSensorStatus(void)
-{
-  if (iaqSensor.status != BSEC_OK) {
-    if (iaqSensor.status < BSEC_OK) {
-      output = "BSEC error code : " + String(iaqSensor.status);
-      Serial.println(output);
-      for (;;)
-        errLeds(); /* Halt in case of failure */
+void checkIaqSensorStatus(void) {
+    if (iaqSensor.status != BSEC_OK) {
+        if (iaqSensor.status < BSEC_OK) {
+            output = "BSEC error code : " + String(iaqSensor.status);
+            Serial.println(output);
+            for (;;) {
+                errLeds();    /* Halt in case of failure */
+            }
+        } else {
+            output = "BSEC warning code : " + String(iaqSensor.status);
+            Serial.println(output);
+        }
+    }
+
+    if (iaqSensor.bme680Status != BME680_OK) {
+        if (iaqSensor.bme680Status < BME680_OK) {
+            output = "BME680 error code : " + String(iaqSensor.bme680Status);
+            Serial.println(output);
+            for (;;) {
+                errLeds();    /* Halt in case of failure */
+            }
+        } else {
+            output = "BME680 warning code : " + String(iaqSensor.bme680Status);
+            Serial.println(output);
+        }
+    }
+}
+
+void errLeds(void) {
+    pinMode(LED_BUILTIN, OUTPUT);
+    digitalWrite(LED_BUILTIN, HIGH);
+    delay(100);
+    digitalWrite(LED_BUILTIN, LOW);
+    delay(100);
+}
+
+void loadState(void) {
+    if (EEPROM.read(0) == BSEC_MAX_STATE_BLOB_SIZE) {
+        // Existing state in EEPROM
+        Serial.println("Reading state from EEPROM");
+
+        for (uint8_t i = 0; i < BSEC_MAX_STATE_BLOB_SIZE; i++) {
+            bsecState[i] = EEPROM.read(i + 1);
+            Serial.print("0x");
+            Serial.print(bsecState[i], HEX);
+            Serial.print(' ');
+        }
+        Serial.println(" ");
+
+        iaqSensor.setState(bsecState);
+        checkIaqSensorStatus();
     } else {
-      output = "BSEC warning code : " + String(iaqSensor.status);
-      Serial.println(output);
-    }
-  }
+        // Erase the EEPROM with zeroes
+        Serial.println("Erasing EEPROM");
 
-  if (iaqSensor.bme680Status != BME680_OK) {
-    if (iaqSensor.bme680Status < BME680_OK) {
-      output = "BME680 error code : " + String(iaqSensor.bme680Status);
-      Serial.println(output);
-      for (;;)
-        errLeds(); /* Halt in case of failure */
+        for (uint8_t i = 0; i < BSEC_MAX_STATE_BLOB_SIZE + 1; i++) {
+            EEPROM.write(i, 0);
+        }
+
+        //EEPROM.commit();
+    }
+}
+
+void updateState(void) {
+    bool update = false;
+    if (stateUpdateCounter == 0) {
+        /* First state update when IAQ accuracy is >= 1 */
+        if (iaqSensor.iaqAccuracy >= 3) {
+            update = true;
+            stateUpdateCounter++;
+        }
     } else {
-      output = "BME680 warning code : " + String(iaqSensor.bme680Status);
-      Serial.println(output);
-    }
-  }
-}
-
-void errLeds(void)
-{
-  pinMode(LED_BUILTIN, OUTPUT);
-  digitalWrite(LED_BUILTIN, HIGH);
-  delay(100);
-  digitalWrite(LED_BUILTIN, LOW);
-  delay(100);
-}
-
-void loadState(void)
-{
-  if (EEPROM.read(0) == BSEC_MAX_STATE_BLOB_SIZE) {
-    // Existing state in EEPROM
-    Serial.println("Reading state from EEPROM");
-
-    for (uint8_t i = 0; i < BSEC_MAX_STATE_BLOB_SIZE; i++) {
-      bsecState[i] = EEPROM.read(i + 1);
-      Serial.print("0x");
-      Serial.print(bsecState[i], HEX);
-      Serial.print(' ');
-    }
-    Serial.println(" ");
-
-    iaqSensor.setState(bsecState);
-    checkIaqSensorStatus();
-  } else {
-    // Erase the EEPROM with zeroes
-    Serial.println("Erasing EEPROM");
-
-    for (uint8_t i = 0; i < BSEC_MAX_STATE_BLOB_SIZE + 1; i++)
-      EEPROM.write(i, 0);
-
-    //EEPROM.commit();
-  }
-}
-
-void updateState(void)
-{
-  bool update = false;
-  if (stateUpdateCounter == 0) {
-    /* First state update when IAQ accuracy is >= 1 */
-    if (iaqSensor.iaqAccuracy >= 3) {
-      update = true;
-      stateUpdateCounter++;
-    }
-  } else {
-    /* Update every STATE_SAVE_PERIOD minutes */
-    if ((stateUpdateCounter * STATE_SAVE_PERIOD) < millis()) {
-      update = true;
-      stateUpdateCounter++;
-    }
-  }
-
-  if (update) {
-    iaqSensor.getState(bsecState);
-    checkIaqSensorStatus();
-
-    Serial.println("Writing state to EEPROM");
-
-    for (uint8_t i = 0; i < BSEC_MAX_STATE_BLOB_SIZE ; i++) {
-      EEPROM.write(i + 1, bsecState[i]);
-      Serial.println(bsecState[i], HEX);
+        /* Update every STATE_SAVE_PERIOD minutes */
+        if ((stateUpdateCounter * STATE_SAVE_PERIOD) < millis()) {
+            update = true;
+            stateUpdateCounter++;
+        }
     }
 
-    EEPROM.write(0, BSEC_MAX_STATE_BLOB_SIZE);
-    //EEPROM.commit();
-  }
+    if (update) {
+        iaqSensor.getState(bsecState);
+        checkIaqSensorStatus();
+
+        Serial.println("Writing state to EEPROM");
+
+        for (uint8_t i = 0; i < BSEC_MAX_STATE_BLOB_SIZE ; i++) {
+            EEPROM.write(i + 1, bsecState[i]);
+            Serial.println(bsecState[i], HEX);
+        }
+
+        EEPROM.write(0, BSEC_MAX_STATE_BLOB_SIZE);
+        //EEPROM.commit();
+    }
 }
